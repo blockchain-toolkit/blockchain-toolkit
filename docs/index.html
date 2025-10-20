@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Toolkit - Professional VS Code Extension for Blockchain Development</title>
+    <meta name="description" content="The most comprehensive VS Code extension for blockchain development with 150+ commands supporting Hardhat, Truffle, Foundry, Solana, and more frameworks.">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <style>
+        :root {
+            --primary-color: #007acc;
+            --primary-dark: #005a9e;
+            --secondary-color: #f3f3f3;
+            --accent-color: #ff6b35;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-light: #999;
+            --text-code: #888;
+            --background: #ffffff;
+            --surface: #f8f9fa;
+            --border: #e9ecef;
+            --shadow: 0 2px 20px rgba(0,0,0,0.1);
+            --gradient: linear-gradient(135deg, #007acc 0%, #005a9e 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--background);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            padding: 150px 20px 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: white;
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        /* Stats Section */
+        .stats {
+            background: var(--surface);
+            padding: 80px 20px;
+        }
+
+        .stats-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .stats-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .stat:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat h3 {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .stat p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 20px;
+            background: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature {
+            padding: 40px;
+            border-radius: 16px;
+            background: var(--surface);
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            background: white;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .feature h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .feature p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Frameworks Section */
+        .frameworks {
+            padding: 100px 20px;
+            background: var(--surface);
+        }
+
+        .frameworks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .framework {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .framework:hover {
+            transform: scale(1.05);
+        }
+
+        .framework img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+
+        .framework h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        /* Command Categories */
+        .commands {
+            padding: 100px 20px;
+            background: white;
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .command-category {
+            padding: 30px;
+            border-left: 4px solid var(--primary-color);
+            background: var(--surface);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .command-category:hover {
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .command-category h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .command-category .count {
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 100px 20px;
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 60px 20px 40px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-section a {
+            color: #cbd5e0;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+            transition: color 0.2s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid #4a5568;
+            color: #a0aec0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.png" alt="Blockchain Toolkit">
+                <span>Blockchain Toolkit</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="getting-started.html">Get Started</a></li>
+                <li><a href="commands.html">Commands</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="https://marketplace.visualstudio.com/items?itemName=blockchain-toolkit.blockchain-toolkit">Install</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Blockchain Toolkit</h1>
+                <div class="subtitle">The Complete VS Code Extension for Blockchain Development</div>
+                <p>Streamline your blockchain development workflow with 150+ commands, multi-framework support, advanced debugging, and comprehensive tooling for Ethereum, Solana, and more.</p>
+                <div class="hero-buttons">
+                    <a href="https://marketplace.visualstudio.com/items?itemName=blockchain-toolkit.blockchain-toolkit" class="btn btn-primary">
+                        📦 Install Extension
+                    </a>
+                    <a href="getting-started.html" class="btn btn-secondary">
+                        🚀 Get Started
+                    </a>
+                    <a href="examples.html" class="btn btn-secondary">
+                        📚 View Examples
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-header">
+                <h2>Comprehensive Blockchain Development</h2>
+                <p>Everything you need for professional blockchain development in one extension</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat">
+                    <h3>150+</h3>
+                    <p>Built-in Commands</p>
+                </div>
+                <div class="stat">
+                    <h3>7</h3>
+                    <p>Supported Frameworks</p>
+                </div>
+                <div class="stat">
+                    <h3>4</h3>
+                    <p>Programming Languages</p>
+                </div>
+                <div class="stat">
+                    <h3>8</h3>
+                    <p>Command Categories</p>
+                </div>
+                <div class="stat">
+                    <h3>20+</h3>
+                    <p>Network Templates</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Powerful Features for Modern Blockchain Development</h2>
+                <p>Built for developers who demand efficiency, security, and comprehensive tooling</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Multi-Framework Support</h3>
+                    <p>Seamlessly work with Hardhat, Truffle, Foundry, Solana/Anchor, Hyperledger Fabric, and more. Auto-detection and framework-specific optimization.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🐛</div>
+                    <h3>Advanced EVM Debugging</h3>
+                    <p>Professional-grade debugging with transaction tracing, state inspection, memory analysis, and step-through debugging capabilities.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Network Management</h3>
+                    <p>Easy switching between networks, RPC management, gas optimization, and comprehensive network monitoring with 20+ pre-configured templates.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Security Analysis</h3>
+                    <p>Built-in vulnerability detection with Slither integration, MythX support, security best practices, and automated audit reports.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Contract Interaction</h3>
+                    <p>Direct contract interaction, ABI management, function calling, event monitoring, and comprehensive transaction analysis.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Gas Optimization</h3>
+                    <p>Gas usage analysis, optimization suggestions, cost estimation, and comprehensive gas reporting for efficient contract deployment.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🧪</div>
+                    <h3>Testing Suite</h3>
+                    <p>Advanced testing capabilities with coverage analysis, performance benchmarking, fuzz testing, and automated test generation.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📋</div>
+                    <h3>Project Templates</h3>
+                    <p>Quick project scaffolding with industry-standard templates for DeFi, NFTs, DAOs, and more complex blockchain applications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Supported Frameworks -->
+    <section class="frameworks">
+        <div class="container">
+            <div class="section-header">
+                <h2>Supported Frameworks & Technologies</h2>
+                <p>Work with all major blockchain development frameworks and languages</p>
+            </div>
+            <div class="frameworks-grid">
+                <div class="framework">
+                    <div class="feature-icon">⚒️</div>
+                    <h4>Hardhat</h4>
+                    <p>Full support with tasks, networks, and plugins</p>
+                </div>
+                <div class="framework">
+                    <div class="feature-icon">🔷</div>
+                    <h4>Truffle</h4>
+                    <p>Complete integration with migrations and testing</p>
+                </div>
+                <div class="framework">
+                    <div class="feature-icon">⚡</div>
+                    <h4>Foundry</h4>
+                    <p>Rust-based toolchain with forge and cast</p>
+                </div>
+                <div class="framework">
+                    <div class="feature-icon">🌞</div>
+                    <h4>Solana/Anchor</h4>
+                    <p>Full Solana program development support</p>
+                </div>
+                <div class="framework">
+                    <div class="feature-icon">🔗</div>
+                    <h4>Hyperledger</h4>
+                    <p>Enterprise blockchain development</p>
+                </div>
+                <div class="framework">
+                    <div class="feature-icon">🌐</div>
+                    <h4>Web3.js</h4>
+                    <p>Ethereum JavaScript library integration</p>
+                </div>
+                <div class="framework">
+                    <div class="feature-icon">📚</div>
+                    <h4>Ethers.js</h4>
+                    <p>Modern Ethereum library support</p>
+                </div>
+                <div class="framework">
+                    <div class="feature-icon">🔐</div>
+                    <h4>OpenZeppelin</h4>
+                    <p>Secure contract templates and utilities</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Command Categories -->
+    <section class="commands">
+        <div class="container">
+            <div class="section-header">
+                <h2>Comprehensive Command Library</h2>
+                <p>150+ specialized commands organized across 8 categories for complete development workflow</p>
+            </div>
+            <div class="commands-grid">
+                <div class="command-category">
+                    <h4>🔗 Blockchain Operations</h4>
+                    <p><span class="count">25+ commands</span> for compilation, deployment, verification, and contract management across multiple networks and frameworks.</p>
+                </div>
+                <div class="command-category">
+                    <h4>🌐 Network Management</h4>
+                    <p><span class="count">20+ commands</span> for network switching, RPC configuration, gas management, and blockchain interaction with pre-configured templates.</p>
+                </div>
+                <div class="command-category">
+                    <h4>🔧 Service Integration</h4>
+                    <p><span class="count">15+ commands</span> for external service integration including IPFS, oracles, indexers, and third-party APIs.</p>
+                </div>
+                <div class="command-category">
+                    <h4>🐛 EVM Debugging</h4>
+                    <p><span class="count">18+ commands</span> for advanced debugging, transaction tracing, state inspection, and performance analysis.</p>
+                </div>
+                <div class="command-category">
+                    <h4>🛡️ Security Tools</h4>
+                    <p><span class="count">12+ commands</span> for vulnerability scanning, security audits, code analysis, and compliance checking.</p>
+                </div>
+                <div class="command-category">
+                    <h4>📋 Contract Interaction</h4>
+                    <p><span class="count">22+ commands</span> for direct contract calls, ABI management, event monitoring, and transaction analysis.</p>
+                </div>
+                <div class="command-category">
+                    <h4>📁 Project Templates</h4>
+                    <p><span class="count">15+ commands</span> for scaffolding DeFi protocols, NFT collections, DAOs, and other blockchain applications.</p>
+                </div>
+                <div class="command-category">
+                    <h4>🔨 Framework Tools</h4>
+                    <p><span class="count">25+ commands</span> for framework-specific operations, testing, optimization, and deployment automation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Accelerate Your Blockchain Development?</h2>
+            <p>Join thousands of developers using Blockchain Toolkit to build the future of decentralized applications</p>
+            <div class="hero-buttons">
+                <a href="https://marketplace.visualstudio.com/items?itemName=blockchain-toolkit.blockchain-toolkit" class="btn" style="background: white; color: var(--primary-color);">
+                    📦 Install from VS Code Marketplace
+                </a>
+                <a href="getting-started.html" class="btn btn-secondary">
+                    📖 Read Documentation
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>🚀 Getting Started</h4>
+                    <a href="getting-started.html">Installation Guide</a>
+                    <a href="getting-started.html#configuration">Configuration</a>
+                    <a href="getting-started.html#first-project">First Project</a>
+                    <a href="examples.html">Tutorials</a>
+                </div>
+                <div class="footer-section">
+                    <h4>📚 Documentation</h4>
+                    <a href="commands.html">Command Reference</a>
+                    <a href="examples.html">Code Examples</a>
+                    <a href="examples.html#nft-collection">NFT Tutorial</a>
+                    <a href="examples.html#defi-protocol">DeFi Tutorial</a>
+                </div>
+                <div class="footer-section">
+                    <h4>🔗 Resources</h4>
+                    <a href="https://marketplace.visualstudio.com/items?itemName=blockchain-toolkit.blockchain-toolkit">VS Code Marketplace</a>
+                    <a href="https://github.com/me-saurabhkohli/blockchain-toolkit">GitHub Repository</a>
+                    <a href="https://github.com/me-saurabhkohli/blockchain-toolkit/issues">Report Issues</a>
+                    <a href="https://github.com/me-saurabhkohli/blockchain-toolkit/discussions">Discussions</a>
+                </div>
+                <div class="footer-section">
+                    <h4>🛠️ Frameworks</h4>
+                    <a href="https://hardhat.org/">Hardhat</a>
+                    <a href="https://trufflesuite.com/">Truffle</a>
+                    <a href="https://getfoundry.sh/">Foundry</a>
+                    <a href="https://www.anchor-lang.com/">Anchor (Solana)</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Saurabh Kohli. Licensed under MIT License.</p>
+                <p>Built with ❤️ for the blockchain developer community</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
